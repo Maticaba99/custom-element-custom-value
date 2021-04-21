@@ -65,12 +65,8 @@
     </div>
     <div id="unique-status" class="status-checking item-status">checking</div>
     <script>
-      var apikey = "";
+      var defaultValue = "";
       var itemid = "";
-      var projectid = "";
-      var variantLang = "";
-      var functionurl = "";
-      var homepagecodename = "";
       function updateDisabled(disabled) {
         if (disabled) {
           $(".disabled_overlay").show();
@@ -104,37 +100,12 @@
             console.log(_context, 'outside')
             console.log(element, 'outsside element')
             itemid = _context.item.id;
-            variantLang = _context.variant.codename;
             var configError = false;
             if (element.config) {
-              if (element.config.apikey) apikey = element.config.apikey;
+              if (element.config.defaultValue) defaultValue = element.config.defaultValue;
               else {
                 showError(
-                  "Your configuration doesn't contain the apikey definition. Please check the documentation of this element."
-                );
-                configError = true;
-              }
-              if (element.config.projectid) {
-                projectid = element.config.projectid;
-              } else {
-                showError(
-                  "Your configuration doesn't contain the projectid definition. Please check the documentation of this element."
-                );
-                configError = true;
-              }
-              if (element.config.functionurl) {
-                functionurl = element.config.functionurl;
-              } else {
-                showError(
-                  "Your configuration doesn't contain the functionurl definition. Please check the documentation of this element."
-                );
-                configError = true;
-              }
-              if (element.config.homepagecodename) {
-                homepagecodename = element.config.homepagecodename;
-              } else {
-                showError(
-                  "Your configuration doesn't contain the homepagecodename definition. Please check the documentation of this element."
+                  "Your configuration doesn't contain the defaultValue definition. Please check the documentation of this element."
                 );
                 configError = true;
               }
