@@ -79,14 +79,14 @@
         }
       }
       function setup(value, id, disabled) {
-        $("#unique").text(value);
+        $("#unique").text(value.defaultValue);
         if (disabled) {
           $("#unique-status").addClass("status-checking item-status");
           $("#unique-status").text(
             "Current item is in a disabled state, value shown was generated the last time the item was changed."
           );
         } else {
-          CustomElement.setValue('cleanData');
+          CustomElement.setValue(value.defaultValue);
         }
       }
       function updateSize() {
@@ -146,9 +146,7 @@
             }
             if (!configError) {
               if (element.value) {
-                console.log(_context)
-                CustomElement.setValue(cleanData);
-                setup(element.value, itemid, element.disabled);
+                setup(element.config, itemid, element.disabled);
               } else {
                 setup("", itemid, element.disabled);
               }
