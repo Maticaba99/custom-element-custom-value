@@ -76,6 +76,7 @@
       }
       function setup(value, id, disabled) {
         $("#unique").text(value.defaultValue);
+        console.log(value)
         if (disabled) {
           $("#unique-status").addClass("status-checking item-status");
           $("#unique-status").text(
@@ -83,6 +84,7 @@
           );
         } else {
           CustomElement.setValue(value.defaultValue);
+          updateSize();
         }
       }
       function updateSize() {
