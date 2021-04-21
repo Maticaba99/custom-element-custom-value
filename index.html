@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Item Path textbox</title>
+    <title>Custom value predefined</title>
     <!-- Include jQuery library -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
 
@@ -76,15 +76,29 @@
       }
       function setup(value, id, disabled) {
         $("#unique").text(value.defaultValue);
-        console.log(value)
+        console.log(disabled)
         if (disabled) {
           $("#unique-status").addClass("status-checking item-status");
           $("#unique-status").text(
             "Current item is in a disabled state, value shown was generated the last time the item was changed."
           );
         } else {
+          try {
+            $("#unique-status").removeClass("status-checking");
+          $("#unique").css("color", "#4caf50");
+          $("#unique-status").addClass("item-status--is-successful");
+          $("#unique-status").text("Successful");
           CustomElement.setValue(value.defaultValue);
           updateSize();
+          } catch (err){
+            $("#unique").css("color", "#ef5350");
+            $("#unique-status").addClass("item-status--failed");
+            $("#unique-status").text(
+              "Lookup failed. This will effect your sites ability, contact an administrator."
+            );
+            updateSize();
+          }
+         
         }
       }
       function updateSize() {
