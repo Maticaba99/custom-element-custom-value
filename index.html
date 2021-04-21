@@ -102,6 +102,7 @@
         try {
           CustomElement.init((element, _context) => {
             console.log(_context, 'outside')
+            console.log(element, 'outsside element')
             itemid = _context.item.id;
             variantLang = _context.variant.codename;
             var configError = false;
