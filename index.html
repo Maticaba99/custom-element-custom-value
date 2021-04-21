@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Item Path textbox</title>
+    <!-- Include jQuery library -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+
+    <!-- Include the Custom Elements API-->
+    <script src="https://app.kontent.ai/js-api/custom-element.js"></script>
+    <link rel="stylesheet" href="./custom-element.css" />
+
+    <!-- Custom element CSS styles -->
+    <style>
+      /* We recommended you always set margin to zero to avoid problems when displaying the element in UI */
+      @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic);
+      html {
+        font-family: sans-serif;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
+      [contenteditable="true"]:empty:before {
+        content: attr(placeholder);
+        color: #aaa;
+        display: block; /* For Firefox */
+      }
+      .status-checking {
+        color: #ff9800;
+      }
+      .disabled_overlay {
+        position: fixed;
+        background-color: #777;
+        z-index: 10;
+        cursor: not-allowed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="disabled_overlay"></div>
+    <div
+      class="text-field text-field--has-button"
+      style="border-bottom: 1px solid #e0e0e0"
+    >
+      <div class="text-field__input u-transparent-border u-no-left-padding">
+        <div
+          id="unique"
+          class="notranslate public-DraftEditor-content"
+          contenteditable="true"
+          placeholder="Empty"
+          role="textbox"
+          spellcheck="false"
+          style="outline: none; user-select: text; overflow-wrap: break-word"
+        ></div>
+      </div>
+    </div>
+    <div id="unique-status" class="status-checking item-status">checking</div>
+    <script>
+      var apikey = "";
+      var itemid = "";
+      var projectid = "";
+      var variantLang = "";
+      var functionurl = "";
+      var homepagecodename = "";
+      function updateDisabled(disabled) {
+        if (disabled) {
+          $(".disabled_overlay").show();
+        } else {
+          $(".disabled_overlay").hide();
+        }
+      }
+      function setup(value, id, disabled) {
+        $("#unique").text(value);
+        if (disabled) {
+          $("#unique-status").addClass("status-checking item-status");
+          $("#unique-status").text(
+            "Current item is in a disabled state, value shown was generated the last time the item was changed."
+          );
+        } else {
+          CustomElement.setValue('cleanData');
+        }
+      }
+      function updateSize() {
+        var height = 100;
+        try {
+          height = parseInt($("html").height());
+        } catch (err) {
+          console.error(err);
+        }
+        CustomElement.setHeight(height);
+      }
+      function initCustomElement() {
+        try {
+          CustomElement.init((element, _context) => {
+            itemid = _context.item.id;
+            variantLang = _context.variant.codename;
+            var configError = false;
+            if (element.config) {
+              if (element.config.apikey) apikey = element.config.apikey;
+              else {
+                showError(
+                  "Your configuration doesn't contain the apikey definition. Please check the documentation of this element."
+                );
+                configError = true;
+              }
+              if (element.config.projectid) {
+                projectid = element.config.projectid;
+              } else {
+                showError(
+                  "Your configuration doesn't contain the projectid definition. Please check the documentation of this element."
+                );
+                configError = true;
+              }
+              if (element.config.functionurl) {
+                functionurl = element.config.functionurl;
+              } else {
+                showError(
+                  "Your configuration doesn't contain the functionurl definition. Please check the documentation of this element."
+                );
+                configError = true;
+              }
+              if (element.config.homepagecodename) {
+                homepagecodename = element.config.homepagecodename;
+              } else {
+                showError(
+                  "Your configuration doesn't contain the homepagecodename definition. Please check the documentation of this element."
+                );
+                configError = true;
+              }
+            } else {
+              showError(
+                "This element needs configuration setup. Please check the documentation of this element."
+              );
+              configError = true;
+            }
+            if (!configError) {
+              if (element.value) {
+                console.log(_context)
+                CustomElement.setValue(cleanData);
+                setup(element.value, itemid, element.disabled);
+              } else {
+                setup("", itemid, element.disabled);
+              }
+            }
+            updateDisabled(element.disabled);
+            //updateDisabled(true); //always disabled as this is a readonly value
+            updateSize();
+          });
+          // React when the disabled state changes (e.g. when publishing the item)
+          CustomElement.onDisabledChanged(updateDisabled);
+        } catch (err) {
+          console.error(err);
+          updateDisabled(true);
+        }
+      }
+      initCustomElement();
+
+      function showError(message) {
+        $("#unique").hide();
+        $("#unique").css("color", "#ef5350");
+        $("#unique-status").addClass("item-status--failed");
+        $("#unique-status").text(message);
+      }
+    </script>
+  </body>
+</html>
